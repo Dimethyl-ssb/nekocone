@@ -12,7 +12,6 @@ body{
 
 table{
     border-collapse:collapse;
-    margin-left:80px;
 }
 
 th,td{
@@ -105,17 +104,19 @@ td.role-extra{
     background:#64b5f6 !important;
 }
 
+#layout{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+}
+
 #filterPanel{
-    position:fixed;
-    right:20px;
-    top:50px;
-
     width:180px;
-
     border:1px solid #ccc;
     background:white;
-
     padding:10px;
+    position:sticky;
+    top:10px;
 }
 
 thead th{
@@ -154,11 +155,34 @@ thead th{
     white-space:nowrap;
 }
 
+@media (max-width: 768px){
+
+    #layout{
+        display:block;
+    }
+
+    #filterPanel{
+        position:static;
+        width:auto;
+        margin-bottom:10px;
+    }
+
+    table{
+        width:100%;
+        font-size:14px;
+    }
+
+}
+
+
+
 
 </style>
 </head>
 
 <body>
+
+<div id="layout">
 
 <details id="filterPanel">
 <summary>絞り込み ▼</summary>
@@ -359,6 +383,7 @@ thead th{
 
 </tbody>
 </table>
+</div>
 <script>
 
 let originalRows = [];
