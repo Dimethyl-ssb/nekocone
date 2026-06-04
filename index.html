@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>キャラステータス</title>
+
+<style>
+body{
+    font-family:sans-serif;
+    font-size:16px;
+}
+
+table{
+    border-collapse:collapse;
+    margin-left:80px;
+}
+
+th,td{
+    border:1px solid black;
+    padding:4px 8px;
+    text-align:center;
+}
+
+th{
+    cursor:pointer;
+    user-select:none;
+    background:#f0f0f0;
+}
+
+.up,.down{
+    color:black;
+    font-weight:bold;
+}
+
+.red td{
+    background:#ffd6e0;
+}
+
+.blue td{
+    background:#d8f0ff;
+}
+
+.yellow td{
+    background:#fff7c7;
+}
+
+.two-columns{
+    column-width:500px;
+    column-gap:20px;
+}
+
+.role-powerful{
+    background:#ff7f50;
+}
+
+.role-buffer{
+    background:#fff176;
+}
+
+.role-debuffer{
+    background:#4db6ac;
+}
+
+.role-healer{
+    background:#81c784;
+}
+
+.role-extra{
+    background:#64b5f6;
+}
+
+.position-floor{
+    background:#b7ffb7;
+}
+
+.position-kitchen{
+    background:#ffcc99;
+}
+
+td.position-floor{
+    background:#b7ffb7 !important;
+}
+
+td.position-kitchen{
+    background:#ffcc99 !important;
+}
+
+td.role-powerful{
+    background:#ff7f50 !important;
+}
+
+td.role-buffer{
+    background:#fff176 !important;
+}
+
+td.role-debuffer{
+    background:#4db6ac !important;
+}
+
+td.role-healer{
+    background:#81c784 !important;
+}
+
+td.role-extra{
+    background:#64b5f6 !important;
+}
+
+#filterPanel{
+    position:fixed;
+    right:20px;
+    top:50px;
+
+    width:180px;
+
+    border:1px solid #ccc;
+    background:white;
+
+    padding:10px;
+}
+
+thead th{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f0f0f0;
+}
+
+.sweet{
+    color:#ff4d6d;
+    font-weight:bold;
+}
+
+.pop{
+    color:#2196f3;
+    font-weight:bold;
+}
+
+.passion{
+    color:#f9a825;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="filterPanel">
+
+<h3>絞り込み</h3>
+
+<b>レアリティ</b><br>
+<label><input type="checkbox" class="filter" value="5" >★★★★★</label><br>
+<label><input type="checkbox" class="filter" value="4" >★★★★☆</label><br>
+<label><input type="checkbox" class="filter" value="3" >★★★☆☆</label><br>
+
+<br>
+
+<b>ユニットタイプ</b><br>
+<label><input type="checkbox" class="filter-position" value="フロア" >フロア</label><br>
+<label><input type="checkbox" class="filter-position" value="キッチン" >キッチン</label><br>
+
+<br>
+
+<b>ロール</b><br>
+<label><input type="checkbox" class="filter-role" value="パワフル" >パワフル</label><br>
+<label><input type="checkbox" class="filter-role" value="バッファー" >バッファー</label><br>
+<label><input type="checkbox" class="filter-role" value="デバッファー" >デバッファー</label><br>
+<label><input type="checkbox" class="filter-role" value="ヒーラー" >ヒーラー</label><br>
+<label><input type="checkbox" class="filter-role" value="エクストラ" >エクストラ</label>
+
+<br>
+
+<b>属性</b><br>
+<label class="sweet">
+<input type="checkbox" class="filter-class" value="red">
+スイート
+</label><br>
+
+<label class="pop">
+<input type="checkbox" class="filter-class" value="blue">
+ポップ
+</label><br>
+
+<label class="passion">
+<input type="checkbox" class="filter-class" value="yellow">
+パッション
+</label><br>
+
+<br><br>
+
+<button onclick="clearFilter()">全表示</button>
+
+</div>
+
+<table id="statusTable">
+<thead>
+<tr>
+
+<th onclick="sortTable(0)">
+<span class="up">▲</span>
+キャラ
+<span class="down">▼</span>
+</th>
+
+<th onclick="sortTable(1)">
+<span class="up">▲</span>
+総評価値
+<span class="down">▼</span>
+</th>
+
+<th onclick="sortTable(2)">
+<span class="up">▲</span>
+フード
+<span class="down">▼</span>
+</th>
+
+<th onclick="sortTable(3)">
+<span class="up">▲</span>
+ドリンク
+<span class="down">▼</span>
+</th>
+
+<th onclick="sortTable(4)">
+<span class="up">▲</span>
+スイーツ
+<span class="down">▼</span>
+</th>
+
+<th onclick="sortTable(5)">
+<span class="up">▲</span>
+接客力
+<span class="down">▼</span>
+</th>
+
+<th onclick="sortTable(6)">
+<span class="up">▲</span>
+レアリティ
+<span class="down">▼</span>
+</th>
+
+<th onclick="toggleGroup(7)">
+<span id="group7">○</span>
+ユニットタイプ
+</th>
+
+<th onclick="toggleGroup(8)">
+<span id="group8">○</span>
+ロール
+</th>
+
+
+
+</tr>
+</thead>
+
+<tbody class="two-columns">
+
+<tr class="yellow"><td>ショコラ</td><td>367,866</td><td>200K</td><td>250K</td><td>211K</td><td>28,523</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-powerful">パワフル</td></tr>
+<tr class="red"><td>バニラ</td><td>330,540</td><td>177K</td><td>125K</td><td>138K</td><td>27,011</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-buffer">バッファー</td></tr>
+<tr class="blue"><td>フレーズ</td><td>282,418</td><td>69,145</td><td>276K</td><td>112K</td><td>22,041</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-buffer">バッファー</td></tr>
+<tr class="yellow"><td>アズキ</td><td>143,774</td><td>53,329</td><td>91,421</td><td>81,897</td><td>10,476</td><td data-rarity="4">★★★★☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-debuffer">デバッファー</td></tr>
+<tr class="yellow"><td>ココナツ</td><td>201,699</td><td>148K</td><td>118K</td><td>104K</td><td>14,856</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="blue"><td>メイプル</td><td>196,016</td><td>68,566</td><td>102K</td><td>60,947</td><td>15,618</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-buffer">バッファー</td></tr>
+<tr class="yellow"><td>シナモン</td><td>123,200</td><td>49,520</td><td>62,851</td><td>99,038</td><td>8,571</td><td data-rarity="4">★★★★☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-healer">ヒーラー</td></tr>
+<tr class="blue"><td>ゆずは</td><td>198,090</td><td>180K</td><td>66,661</td><td>85,707</td><td>14,856</td><td data-rarity="4">★★★★☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-powerful">パワフル</td></tr>
+<tr class="yellow"><td>みかん</td><td>187,715</td><td>62,851</td><td>112K</td><td>53,329</td><td>14,856</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-buffer">バッファー</td></tr>
+<tr class="red"><td>さくら</td><td>355,011</td><td>289K</td><td>198K</td><td>155K</td><td>27,442</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-powerful">パワフル</td></tr>
+<tr class="yellow"><td>くるみ</td><td>244,138</td><td>62,663</td><td>235K</td><td>248K</td><td>17,287</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-extra">エクストラ</td></tr>
+<tr class="yellow"><td>りんご</td><td>331,543</td><td>138K</td><td>177K</td><td>112K</td><td>27,226</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-buffer">バッファー</td></tr>
+<tr class="red"><td>すもも</td><td>295,295</td><td>179K</td><td>112K</td><td>118K</td><td>23,769</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-healer">ヒーラー</td></tr>
+<tr class="blue"><td>マルメロ</td><td>203,712</td><td>102K</td><td>68,566</td><td>45,710</td><td>16,570</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-buffer">バッファー</td></tr>
+<tr class="yellow"><td>パラミツ</td><td>360,535</td><td>159K</td><td>276K</td><td>155K</td><td>28,523</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="red"><td>ホウリ</td><td>159,676</td><td>104K</td><td>60,947</td><td>28,569</td><td>12,380</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-healer">ヒーラー</td></tr>
+<tr class="blue"><td>ラムット</td><td>257,631</td><td>116K</td><td>155K</td><td>90,753</td><td>20,528</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-healer">ヒーラー</td></tr>
+<tr class="yellow"><td>カヌレ</td><td>151,796</td><td>43,805</td><td>129K</td><td>60,947</td><td>11,237</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-debuffer">デバッファー</td></tr>
+<tr class="red"><td>サブレ</td><td>215,792</td><td>87,612</td><td>108K</td><td>144K</td><td>16,570</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="red"><td>スフレ</td><td>353,620</td><td>146K</td><td>196K</td><td>267K</td><td>27,657</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-powerful">パワフル</td></tr>
+<tr class="red"><td>ソルベ</td><td>186,758</td><td>179K</td><td>166K</td><td>172K</td><td>11,885</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-extra">エクストラ</td></tr>
+<tr><td>ババロア</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td data-rarity="0">?</td>
+<td>?</td><td>?</td></tr>
+<tr class="blue"><td>パルミラ</td><td>196,337</td><td>60,947</td><td>97,134</td><td>79,993</td><td>15,618</td><td data-rarity="4">★★★★☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-extra">エクストラ</td></tr>
+<tr class="yellow"><td>アキ―</td><td>212,583</td><td>85,707</td><td>137K</td><td>79,993</td><td>16,570</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="blue"><td>アクドゥト</td><td>340,197</td><td>267K</td><td>198K</td><td>179K</td><td>25,929</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="red"><td>サフラン</td><td>248,389</td><td>90,753</td><td>127K</td><td>261K</td><td>18,367</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-debuffer">デバッファー</td></tr>
+<tr class="yellow"><td>ドーナツ</td><td>159,336</td><td>59,042</td><td>51,424</td><td>81,897</td><td>12,380</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-debuffer">デバッファー</td></tr>
+<tr class="red"><td>マフィン</td><td>338,036</td><td>211K</td><td>185K</td><td>205K</td><td>26,145</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="blue"><td>クッキー</td><td>208,276</td><td>205K</td><td>93,325</td><td>60,947</td><td>15,618</td><td data-rarity="4">★★★★☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="blue"><td>リコリス</td><td>303,420</td><td>159K</td><td>112K</td><td>179K</td><td>24,201</td><td data-rarity="5">★★★★★</td>
+<td class="position-kitchen">キッチン</td><td class="role-debuffer">デバッファー</td></tr>
+<tr class="blue"><td>ブラウニー</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td data-rarity="5">★★★★★</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="red"><td>ソラ</td><td>131,247</td><td>41,210</td><td>69,232</td><td>54,397</td><td>9,891</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-healer">ヒーラー</td></tr>
+<tr class="blue"><td>ハナ</td><td>158,851</td><td>69,232</td><td>79,123</td><td>42,859</td><td>12,363</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-debuffer">デバッファー</td></tr>
+<tr class="yellow"><td>ミミ</td><td>163,326</td><td>74,178</td><td>36,264</td><td>79,123</td><td>12,857</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-buffer">バッファー</td></tr>
+<tr class="red"><td>ルナ</td><td>184,642</td><td>145K</td><td>52,748</td><td>89,013</td><td>14,011</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-powerful">パワフル</td></tr>
+<tr class="blue"><td>ユキ</td><td>175,030</td><td>52,748</td><td>102K</td><td>151K</td><td>12,857</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-powerful">パワフル</td></tr>
+<tr class="yellow"><td>スズ</td><td>183,321</td><td>69,232</td><td>128K</td><td>92,310</td><td>13,846</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-kitchen">キッチン</td><td class="role-powerful">パワフル</td></tr>
+<tr class="blue"><td>クロ</td><td>156,592</td><td>34,616</td><td>93,929</td><td>56,045</td><td>12,198</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-buffer">バッファー</td></tr>
+<tr class="blue"><td>ナツ</td><td>175,002</td><td>85,716</td><td>90,662</td><td>110K</td><td>13,022</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="yellow"><td>ムギ</td><td>173,982</td><td>65,936</td><td>52,748</td><td>56,045</td><td>14,011</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-debuffer">デバッファー</td></tr>
+<tr class="red"><td>ヒメ</td><td>169,501</td><td>121K</td><td>123K</td><td>51,100</td><td>12,363</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="red"><td>リン</td><td>179,011</td><td>52,748</td><td>113K</td><td>126K</td><td>13,352</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+<tr class="yellow"><td>キク</td><td>182,261</td><td>80,771</td><td>138K</td><td>74,178</td><td>13,682</td><td data-rarity="3">★★★☆☆</td>
+<td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
+
+</tbody>
+</table>
+<script>
+
+let originalRows = [];
+let currentColumn = -1;
+let currentMode = 0; // 0=元順 1=降順 2=昇順
+let groupStates = {
+    7:false,
+    8:false
+};
+
+window.onload = function() {
+
+    const tbody = document.querySelector("#statusTable tbody");
+    originalRows = [...tbody.rows].map(row => row.cloneNode(true));
+
+   document.querySelectorAll(
+    ".filter,.filter-position,.filter-role,.filter-class"
+).forEach(box=>{
+    box.addEventListener("change", applyFilter);
+});
+
+};
+
+function sortTable(col){
+
+    if(currentColumn === col){
+        currentMode++;
+        if(currentMode > 2){
+            currentMode = 0;
+        }
+    }else{
+        currentColumn = col;
+        currentMode = 1;
+    }
+
+    document.querySelectorAll(".up").forEach(e=>{
+        e.style.color="black";
+    });
+
+    document.querySelectorAll(".down").forEach(e=>{
+        e.style.color="black";
+    });
+
+    const tbody = document.querySelector("#statusTable tbody");
+
+    if(currentMode === 0){
+
+        tbody.innerHTML="";
+
+        originalRows.forEach(row=>{
+            tbody.appendChild(row.cloneNode(true));
+        });
+
+        return;
+    }
+
+    let rows = [...tbody.rows];
+	
+	function parseValue(value){
+
+    value = value.replace(/,/g,"").trim();
+
+    if(value.endsWith("K")){
+        return parseFloat(value) * 1000;
+    }
+
+    return Number(value);
+}
+
+    rows.sort((a,b)=>{
+
+        let x = a.cells[col].textContent.trim();
+        let y = b.cells[col].textContent.trim();
+		
+let numX = parseValue(x);
+let numY = parseValue(y);
+
+if(col === 6){
+
+    numX = Number(a.cells[col].dataset.rarity);
+    numY = Number(b.cells[col].dataset.rarity);
+
+}
+
+        let numeric =
+            !isNaN(numX) &&
+            !isNaN(numY);
+
+        if(numeric){
+
+            return currentMode === 1
+                ? numY - numX
+                : numX - numY;
+
+        }else{
+
+            return currentMode === 1
+                ? x.localeCompare(y,"ja")
+                : y.localeCompare(x,"ja");
+        }
+    });
+
+    tbody.innerHTML="";
+
+    rows.forEach(row=>{
+        tbody.appendChild(row);
+    });
+
+    const th = document.querySelectorAll("th")[col];
+
+    if(currentMode === 1){
+        th.querySelector(".up").style.color="red";
+    }
+
+    if(currentMode === 2){
+        th.querySelector(".down").style.color="blue";
+    }
+}
+
+function toggleGroup(col){
+
+    groupStates[col] = !groupStates[col];
+
+    document.getElementById("group"+col).textContent =
+        groupStates[col] ? "●" : "○";
+
+    const tbody = document.querySelector("#statusTable tbody");
+
+    let rows = [...tbody.rows];
+
+    if(groupStates[col]){
+
+        rows.sort((a,b)=>{
+
+            let x = a.cells[col].textContent.trim();
+            let y = b.cells[col].textContent.trim();
+
+            return x.localeCompare(y,"ja");
+
+        });
+
+    }else{
+
+        rows = originalRows.map(row =>
+            row.cloneNode(true)
+        );
+
+    }
+
+    tbody.innerHTML="";
+
+    rows.forEach(row=>{
+        tbody.appendChild(row);
+    });
+}
+
+function applyFilter(){
+
+    let rarity =
+        [...document.querySelectorAll(".filter:checked")]
+        .map(x=>x.value);
+
+    let position =
+        [...document.querySelectorAll(".filter-position:checked")]
+        .map(x=>x.value);
+
+    let role =
+        [...document.querySelectorAll(".filter-role:checked")]
+        .map(x=>x.value);
+		
+	let characterClass =
+    [...document.querySelectorAll(".filter-class:checked")]
+    .map(x=>x.value);	
+
+    document.querySelectorAll("#statusTable tbody tr")
+    .forEach(row=>{
+
+        let rowRarity =
+            row.cells[6]?.dataset.rarity || "";
+
+        let rowPosition =
+            row.cells[7]?.textContent.trim() || "";
+
+        let rowRole =
+            row.cells[8]?.textContent.trim() || "";
+			
+		let rowClass = "";
+
+if(row.classList.contains("red")){
+    rowClass = "red";
+}
+else if(row.classList.contains("blue")){
+    rowClass = "blue";
+}
+else if(row.classList.contains("yellow")){
+    rowClass = "yellow";
+}	
+
+        let rarityMatch =
+    rarity.length === 0 ||
+    rarity.includes(rowRarity);
+
+let positionMatch =
+    position.length === 0 ||
+    position.includes(rowPosition);
+
+let roleMatch =
+    role.length === 0 ||
+    role.includes(rowRole);
+	
+let classMatch =
+    characterClass.length === 0 ||
+    characterClass.includes(rowClass);	
+
+let show =
+    rarityMatch &&
+    positionMatch &&
+    roleMatch &&
+    classMatch;
+
+        row.style.display =
+            show ? "" : "none";
+
+    });
+}
+
+function clearFilter(){
+
+    document.querySelectorAll(
+        ".filter,.filter-position,.filter-role,.filter-class"
+    ).forEach(box=>{
+        box.checked = false;
+    });
+
+    applyFilter();
+
+}
+
+</script>
