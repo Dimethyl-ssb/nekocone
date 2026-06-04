@@ -140,14 +140,28 @@ thead th{
     font-weight:bold;
 }
 
+.chara-icon{
+    width:40px;
+    height:40px;
+    margin-right:6px;
+    vertical-align:middle;
+    object-fit:cover;
+    border-radius:4px;
+}
+
+#statusTable td:first-child{
+    text-align:left;
+    white-space:nowrap;
+}
+
+
 </style>
 </head>
 
 <body>
 
-<div id="filterPanel">
-
-<h3>絞り込み</h3>
+<details id="filterPanel">
+<summary>絞り込み ▼</summary>
 
 <b>レアリティ</b><br>
 <label><input type="checkbox" class="filter" value="5" >★★★★★</label><br>
@@ -191,7 +205,7 @@ thead th{
 
 <button onclick="clearFilter()">全表示</button>
 
-</div>
+</details>
 
 <table id="statusTable">
 <thead>
@@ -358,13 +372,38 @@ let groupStates = {
 window.onload = function() {
 
     const tbody = document.querySelector("#statusTable tbody");
+
+    document.querySelectorAll("#statusTable tbody tr").forEach(row=>{
+
+    const cell = row.cells[0];
+
+    const name = cell.textContent.trim();
+
+    if(name === "?" || name === ""){
+        return;
+    }
+
+    const img = document.createElement("img");
+
+    img.src = "images/" + name + ".png";
+
+    img.className = "chara-icon";
+
+    img.onerror = function(){
+        this.style.display = "none";
+    };
+
+    cell.prepend(img);
+
+});
+
     originalRows = [...tbody.rows].map(row => row.cloneNode(true));
 
-   document.querySelectorAll(
-    ".filter,.filter-position,.filter-role,.filter-class"
-).forEach(box=>{
-    box.addEventListener("change", applyFilter);
-});
+    document.querySelectorAll(
+        ".filter,.filter-position,.filter-role,.filter-class"
+    ).forEach(box=>{
+        box.addEventListener("change", applyFilter);
+    });
 
 };
 
