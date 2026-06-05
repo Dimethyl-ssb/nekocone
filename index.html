@@ -440,6 +440,12 @@ window.onload = function() {
 
 function sortTable(col){
 
+groupStates[7] = false;
+groupStates[8] = false;
+
+document.getElementById("group7").textContent = "○";
+document.getElementById("group8").textContent = "○";
+
     if(currentColumn === col){
         currentMode++;
         if(currentMode > 2){
@@ -460,16 +466,17 @@ function sortTable(col){
 
     const tbody = document.querySelector("#statusTable tbody");
 
-    if(currentMode === 0){
+if(currentMode === 0){
 
-        tbody.innerHTML="";
+    tbody.innerHTML="";
 
-        originalRows.forEach(row=>{
-            tbody.appendChild(row.cloneNode(true));
-        });
+    originalRows.forEach(row=>{
+        tbody.appendChild(row.cloneNode(true));
+    });
 
-        return;
-    }
+    applyFilter();
+    return;
+}
 
     let rows = [...tbody.rows];
 	
@@ -523,6 +530,8 @@ if(col === 6){
         tbody.appendChild(row);
     });
 
+    applyFilter();
+
     const th = document.querySelectorAll("th")[col];
 
     if(currentMode === 1){
@@ -569,6 +578,9 @@ function toggleGroup(col){
     rows.forEach(row=>{
         tbody.appendChild(row);
     });
+
+    applyFilter();
+
 }
 
 function applyFilter(){
