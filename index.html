@@ -2,160 +2,336 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>キャラステータス</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>キャラステータス攻略</title>
 
 <style>
+:root{
+    --bg:#f4f1ea;
+    --panel:#ffffff;
+    --ink:#3b2e2a;
+    --ink-soft:#7a6e68;
+    --border:#e3dcd2;
+    --accent:#d97757;
+    --accent-soft:#f6e3d8;
+    --red:#ffe1e8;
+    --red-strong:#ff6b8a;
+    --blue:#e1f1fb;
+    --blue-strong:#3aa0e0;
+    --yellow:#fff3c4;
+    --yellow-strong:#e0a800;
+    --shadow:0 2px 8px rgba(59,46,42,0.08);
+    --radius:10px;
+}
+
+*{
+    box-sizing:border-box;
+}
+
 body{
-    font-family:sans-serif;
-    font-size:16px;
+    font-family:"Hiragino Sans","Yu Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    font-size:15px;
+    margin:0;
+    padding:18px;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
 }
 
-table{
-    border-collapse:collapse;
+h1{
+    font-size:22px;
+    margin:0 0 4px 0;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
-th,td{
-    border:1px solid black;
-    padding:4px 8px;
-    text-align:center;
+h1 .badge{
+    background:var(--accent);
+    color:white;
+    font-size:12px;
+    padding:2px 8px;
+    border-radius:999px;
+    font-weight:normal;
 }
 
-th{
-    cursor:pointer;
-    user-select:none;
-    background:#f0f0f0;
-}
-
-.up,.down{
-    color:black;
-    font-weight:bold;
-}
-
-.red td{
-    background:#ffd6e0;
-}
-
-.blue td{
-    background:#d8f0ff;
-}
-
-.yellow td{
-    background:#fff7c7;
-}
-
-.two-columns{
-    column-width:500px;
-    column-gap:20px;
-}
-
-.role-powerful{
-    background:#ff7f50;
-}
-
-.role-buffer{
-    background:#fff176;
-}
-
-.role-debuffer{
-    background:#4db6ac;
-}
-
-.role-healer{
-    background:#81c784;
-}
-
-.role-extra{
-    background:#64b5f6;
-}
-
-.position-floor{
-    background:#b7ffb7;
-}
-
-.position-kitchen{
-    background:#ffcc99;
-}
-
-td.position-floor{
-    background:#b7ffb7 !important;
-}
-
-td.position-kitchen{
-    background:#ffcc99 !important;
-}
-
-td.role-powerful{
-    background:#ff7f50 !important;
-}
-
-td.role-buffer{
-    background:#fff176 !important;
-}
-
-td.role-debuffer{
-    background:#4db6ac !important;
-}
-
-td.role-healer{
-    background:#81c784 !important;
-}
-
-td.role-extra{
-    background:#64b5f6 !important;
+.subtitle{
+    color:var(--ink-soft);
+    margin:0 0 18px 0;
+    font-size:13px;
 }
 
 #layout{
     display:flex;
     align-items:flex-start;
-    gap:20px;
+    gap:18px;
+    max-width:1400px;
+    margin:0 auto;
 }
 
+/* ---------- フィルターパネル ---------- */
 #filterPanel{
-    width:180px;
-    border:1px solid #ccc;
-    background:white;
-    padding:10px;
+    width:220px;
+    flex-shrink:0;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--panel);
+    padding:0;
     position:sticky;
-    top:10px;
+    top:18px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+#filterPanel summary{
+    padding:12px 16px;
+    font-weight:bold;
+    cursor:pointer;
+    background:var(--accent-soft);
+    list-style:none;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    user-select:none;
+}
+
+#filterPanel summary::-webkit-details-marker{
+    display:none;
+}
+
+#filterPanel summary::after{
+    content:"▾";
+    transition:transform .2s;
+    color:var(--accent);
+}
+
+#filterPanel[open] summary::after{
+    transform:rotate(180deg);
+}
+
+.filter-body{
+    padding:14px 16px 16px;
+}
+
+.filter-section{
+    margin-bottom:14px;
+}
+
+.filter-section:last-of-type{
+    margin-bottom:0;
+}
+
+.filter-section-title{
+    font-size:12px;
+    font-weight:bold;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-bottom:6px;
+    display:block;
+}
+
+.filter-section label{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 2px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    transition:background .15s;
+}
+
+.filter-section label:hover{
+    background:#f5f0e9;
+}
+
+.filter-section input[type="checkbox"]{
+    accent-color:var(--accent);
+    width:15px;
+    height:15px;
+    cursor:pointer;
+}
+
+#searchBox{
+    width:100%;
+    padding:7px 10px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    font-size:14px;
+    margin-bottom:14px;
+}
+
+#searchBox:focus{
+    outline:2px solid var(--accent);
+    outline-offset:1px;
+}
+
+.swatch{
+    display:inline-block;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    margin-right:2px;
+}
+
+.clear-btn{
+    width:100%;
+    padding:8px;
+    border:1px solid var(--accent);
+    background:white;
+    color:var(--accent);
+    border-radius:7px;
+    font-weight:bold;
+    cursor:pointer;
+    font-size:13px;
+    transition:.15s;
+}
+
+.clear-btn:hover{
+    background:var(--accent);
+    color:white;
+}
+
+#resultCount{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:10px;
+    text-align:center;
+}
+
+/* ---------- テーブル ---------- */
+#tableWrap{
+    flex:1;
+    min-width:0;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:auto;
+    max-height:calc(100vh - 36px);
+}
+
+table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:760px;
+}
+
+th,td{
+    padding:9px 10px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
 }
 
 thead th{
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: #f0f0f0;
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#fbf8f3;
+    color:var(--ink);
+    font-size:13px;
+    cursor:pointer;
+    user-select:none;
+    border-bottom:2px solid var(--border);
+    transition:background .15s;
 }
 
-.sweet{
-    color:#ff4d6d;
+thead th:hover{
+    background:var(--accent-soft);
+}
+
+thead th .up,
+thead th .down{
+    color:#c9bfb4;
     font-weight:bold;
+    font-size:11px;
 }
 
-.pop{
-    color:#2196f3;
+tbody tr{
+    transition:background .12s;
+}
+
+tbody tr:hover td{
+    filter:brightness(0.96);
+}
+
+tbody tr.row-hidden{
+    display:none !important;
+}
+
+.red td{ background:var(--red); }
+.blue td{ background:var(--blue); }
+.yellow td{ background:var(--yellow); }
+
+.class-dot{
+    display:inline-block;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    margin-right:5px;
+    vertical-align:middle;
+}
+.red .class-dot{ background:var(--red-strong); }
+.blue .class-dot{ background:var(--blue-strong); }
+.yellow .class-dot{ background:var(--yellow-strong); }
+
+.role-pill,.position-pill{
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:999px;
+    font-size:12px;
     font-weight:bold;
+    color:white;
+    white-space:nowrap;
 }
 
-.passion{
-    color:#f9a825;
+.role-powerful .role-pill{ background:#ff7f50; }
+.role-buffer .role-pill{ background:#e0b400; }
+.role-debuffer .role-pill{ background:#4db6ac; }
+.role-healer .role-pill{ background:#66bb6a; }
+.role-extra .role-pill{ background:#5c9ce6; }
+
+.position-floor .position-pill{ background:#5cb85c; }
+.position-kitchen .position-pill{ background:#f0964d; }
+
+#statusTable td:first-child{
+    text-align:left;
+}
+
+.chara-name-cell{
+    display:flex;
+    align-items:center;
+    gap:8px;
     font-weight:bold;
 }
 
 .chara-icon{
-    width:40px;
-    height:40px;
-    margin-right:6px;
-    vertical-align:middle;
+    width:36px;
+    height:36px;
+    flex-shrink:0;
     object-fit:cover;
-    border-radius:4px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:#eee;
 }
 
-#statusTable td:first-child{
-    text-align:left;
-    white-space:nowrap;
+.rarity-stars{
+    color:#e0a800;
+    letter-spacing:1px;
+}
+
+.no-results{
+    text-align:center;
+    padding:40px 0;
+    color:var(--ink-soft);
 }
 
 @media (max-width: 768px){
+
+    body{ padding:10px; }
 
     #layout{
         display:block;
@@ -164,142 +340,90 @@ thead th{
     #filterPanel{
         position:static;
         width:auto;
-        margin-bottom:10px;
+        margin-bottom:12px;
+    }
+
+    #tableWrap{
+        max-height:none;
     }
 
     table{
-        width:100%;
-        font-size:14px;
+        font-size:13px;
+        min-width:680px;
     }
 
+    .chara-icon{
+        width:28px;
+        height:28px;
+    }
 }
-
-.table-note{
-    font-size:14px;
-    color:#666;
-    margin:0 0 8px 0;
-}
-
-
-
-
 </style>
 </head>
 
 <body>
 
+<h1><span class="badge">ネココネキャラステータス一覧</span></h1>
+<p class="subtitle">表の見出しをクリックすると並び替え、左の絞り込みパネルで条件を指定できます。</p>
+
 <div id="layout">
 
-<details id="filterPanel"open>
-<summary>絞り込み ▼</summary>
+<details id="filterPanel" open>
+<summary>絞り込み</summary>
+<div class="filter-body">
 
-<b>レアリティ</b><br>
-<label><input type="checkbox" class="filter" value="5" >★★★★★</label><br>
-<label><input type="checkbox" class="filter" value="4" >★★★★☆</label><br>
-<label><input type="checkbox" class="filter" value="3" >★★★☆☆</label><br>
+<input type="text" id="searchBox" placeholder="キャラ名で検索...">
 
-<br>
+<div class="filter-section">
+<span class="filter-section-title">レアリティ</span>
+<label><input type="checkbox" class="filter" value="5">★★★★★</label>
+<label><input type="checkbox" class="filter" value="4">★★★★☆</label>
+<label><input type="checkbox" class="filter" value="3">★★★☆☆</label>
+</div>
 
-<b>ユニットタイプ</b><br>
-<label><input type="checkbox" class="filter-position" value="フロア" >フロア</label><br>
-<label><input type="checkbox" class="filter-position" value="キッチン" >キッチン</label><br>
+<div class="filter-section">
+<span class="filter-section-title">ユニットタイプ</span>
+<label><input type="checkbox" class="filter-position" value="フロア">フロア</label>
+<label><input type="checkbox" class="filter-position" value="キッチン">キッチン</label>
+</div>
 
-<br>
+<div class="filter-section">
+<span class="filter-section-title">ロール</span>
+<label><input type="checkbox" class="filter-role" value="パワフル">パワフル</label>
+<label><input type="checkbox" class="filter-role" value="バッファー">バッファー</label>
+<label><input type="checkbox" class="filter-role" value="デバッファー">デバッファー</label>
+<label><input type="checkbox" class="filter-role" value="ヒーラー">ヒーラー</label>
+<label><input type="checkbox" class="filter-role" value="エクストラ">エクストラ</label>
+</div>
 
-<b>ロール</b><br>
-<label><input type="checkbox" class="filter-role" value="パワフル" >パワフル</label><br>
-<label><input type="checkbox" class="filter-role" value="バッファー" >バッファー</label><br>
-<label><input type="checkbox" class="filter-role" value="デバッファー" >デバッファー</label><br>
-<label><input type="checkbox" class="filter-role" value="ヒーラー" >ヒーラー</label><br>
-<label><input type="checkbox" class="filter-role" value="エクストラ" >エクストラ</label>
+<div class="filter-section">
+<span class="filter-section-title">属性</span>
+<label><input type="checkbox" class="filter-class" value="red"><span class="swatch" style="background:var(--red-strong)"></span>スイート</label>
+<label><input type="checkbox" class="filter-class" value="blue"><span class="swatch" style="background:var(--blue-strong)"></span>ポップ</label>
+<label><input type="checkbox" class="filter-class" value="yellow"><span class="swatch" style="background:var(--yellow-strong)"></span>パッション</label>
+</div>
 
-<br>
+<button class="clear-btn" onclick="clearFilter()">絞り込みを解除</button>
+<div id="resultCount"></div>
 
-<b>属性</b><br>
-<label class="sweet">
-<input type="checkbox" class="filter-class" value="red">
-スイート
-</label><br>
-
-<label class="pop">
-<input type="checkbox" class="filter-class" value="blue">
-ポップ
-</label><br>
-
-<label class="passion">
-<input type="checkbox" class="filter-class" value="yellow">
-パッション
-</label><br>
-
-<br><br>
-
-<button onclick="clearFilter()">全表示</button>
-
+</div>
 </details>
 
+<div id="tableWrap">
 <table id="statusTable">
 <thead>
 <tr>
-
-<th onclick="sortTable(0)">
-<span class="up">▲</span>
-キャラ
-<span class="down">▼</span>
-</th>
-
-<th onclick="sortTable(1)">
-<span class="up">▲</span>
-総評価値
-<span class="down">▼</span>
-</th>
-
-<th onclick="sortTable(2)">
-<span class="up">▲</span>
-フード
-<span class="down">▼</span>
-</th>
-
-<th onclick="sortTable(3)">
-<span class="up">▲</span>
-ドリンク
-<span class="down">▼</span>
-</th>
-
-<th onclick="sortTable(4)">
-<span class="up">▲</span>
-スイーツ
-<span class="down">▼</span>
-</th>
-
-<th onclick="sortTable(5)">
-<span class="up">▲</span>
-接客力
-<span class="down">▼</span>
-</th>
-
-<th onclick="sortTable(6)">
-<span class="up">▲</span>
-レアリティ
-<span class="down">▼</span>
-</th>
-
-<th onclick="toggleGroup(7)">
-<span id="group7">○</span>
-ユニットタイプ
-</th>
-
-<th onclick="toggleGroup(8)">
-<span id="group8">○</span>
-ロール
-</th>
-
-
-
+<th onclick="sortTable(0)"><span class="up">▲</span>キャラ<span class="down">▼</span></th>
+<th onclick="sortTable(1)"><span class="up">▲</span>総評価値<span class="down">▼</span></th>
+<th onclick="sortTable(2)"><span class="up">▲</span>フード<span class="down">▼</span></th>
+<th onclick="sortTable(3)"><span class="up">▲</span>ドリンク<span class="down">▼</span></th>
+<th onclick="sortTable(4)"><span class="up">▲</span>スイーツ<span class="down">▼</span></th>
+<th onclick="sortTable(5)"><span class="up">▲</span>接客力<span class="down">▼</span></th>
+<th onclick="sortTable(6)"><span class="up">▲</span>レアリティ<span class="down">▼</span></th>
+<th onclick="toggleGroup(7)"><span id="group7">○</span> ユニットタイプ</th>
+<th onclick="toggleGroup(8)"><span id="group8">○</span> ロール</th>
 </tr>
 </thead>
-
-<tbody class="two-columns">
-
+<tbody>
 <tr class="yellow"><td>ショコラ</td><td>367,866</td><td>200K</td><td>250K</td><td>211K</td><td>28,523</td><td data-rarity="5">★★★★★</td>
 <td class="position-floor">フロア</td><td class="role-powerful">パワフル</td></tr>
 <tr class="red"><td>バニラ</td><td>330,540</td><td>177K</td><td>125K</td><td>138K</td><td>27,011</td><td data-rarity="5">★★★★★</td>
@@ -392,43 +516,68 @@ thead th{
 </tbody>
 </table>
 </div>
+</div>
+
 <script>
 
 let originalRows = [];
 let currentColumn = -1;
 let currentMode = 0; // 0=元順 1=降順 2=昇順
-let groupStates = {
-    7:false,
-    8:false
-};
+let groupStates = { 7:false, 8:false };
+
+function parseValue(value){
+    value = value.replace(/,/g,"").trim();
+    if(value.endsWith("K")){
+        return parseFloat(value) * 1000;
+    }
+    return Number(value);
+}
+
+function decorateRow(row){
+
+    const nameCell = row.cells[0];
+    const name = nameCell.textContent.trim();
+
+    if(name && name !== "?"){
+        const wrap = document.createElement("div");
+        wrap.className = "chara-name-cell";
+
+        const img = document.createElement("img");
+        img.src = "images/" + name + ".png";
+        img.className = "chara-icon";
+        img.alt = name;
+        img.onerror = function(){ this.style.display = "none"; };
+
+        const label = document.createElement("span");
+        label.textContent = name;
+
+        wrap.appendChild(img);
+        wrap.appendChild(label);
+        nameCell.textContent = "";
+        nameCell.appendChild(wrap);
+    }
+
+    const rarityCell = row.cells[6];
+    if(rarityCell){
+        rarityCell.innerHTML = '<span class="rarity-stars">' + rarityCell.textContent.trim() + '</span>';
+    }
+
+    const positionCell = row.cells[7];
+    if(positionCell){
+        positionCell.innerHTML = '<span class="position-pill">' + positionCell.textContent.trim() + '</span>';
+    }
+
+    const roleCell = row.cells[8];
+    if(roleCell){
+        roleCell.innerHTML = '<span class="role-pill">' + roleCell.textContent.trim() + '</span>';
+    }
+}
 
 window.onload = function() {
 
     const tbody = document.querySelector("#statusTable tbody");
 
-    document.querySelectorAll("#statusTable tbody tr").forEach(row=>{
-
-    const cell = row.cells[0];
-
-    const name = cell.textContent.trim();
-
-    if(name === "?" || name === ""){
-        return;
-    }
-
-    const img = document.createElement("img");
-
-    img.src = "images/" + name + ".png";
-
-    img.className = "chara-icon";
-
-    img.onerror = function(){
-        this.style.display = "none";
-    };
-
-    cell.prepend(img);
-
-});
+    [...tbody.rows].forEach(decorateRow);
 
     originalRows = [...tbody.rows].map(row => row.cloneNode(true));
 
@@ -438,233 +587,153 @@ window.onload = function() {
         box.addEventListener("change", applyFilter);
     });
 
+    document.getElementById("searchBox").addEventListener("input", applyFilter);
+
+    applyFilter();
 };
 
 function sortTable(col){
 
-groupStates[7] = false;
-groupStates[8] = false;
-
-document.getElementById("group7").textContent = "○";
-document.getElementById("group8").textContent = "○";
+    groupStates[7] = false;
+    groupStates[8] = false;
+    document.getElementById("group7").textContent = "○";
+    document.getElementById("group8").textContent = "○";
 
     if(currentColumn === col){
         currentMode++;
-        if(currentMode > 2){
-            currentMode = 0;
-        }
+        if(currentMode > 2) currentMode = 0;
     }else{
         currentColumn = col;
         currentMode = 1;
     }
 
-    document.querySelectorAll(".up").forEach(e=>{
-        e.style.color="black";
-    });
-
-    document.querySelectorAll(".down").forEach(e=>{
-        e.style.color="black";
+    document.querySelectorAll(".up,.down").forEach(e=>{
+        e.style.color = "";
     });
 
     const tbody = document.querySelector("#statusTable tbody");
 
-if(currentMode === 0){
-
-    tbody.innerHTML="";
-
-    originalRows.forEach(row=>{
-        tbody.appendChild(row.cloneNode(true));
-    });
-
-    applyFilter();
-    return;
-}
-
-    let rows = [...tbody.rows];
-	
-	function parseValue(value){
-
-    value = value.replace(/,/g,"").trim();
-
-    if(value.endsWith("K")){
-        return parseFloat(value) * 1000;
+    if(currentMode === 0){
+        tbody.innerHTML = "";
+        originalRows.forEach(row=>{
+            tbody.appendChild(row.cloneNode(true));
+        });
+        applyFilter();
+        return;
     }
 
-    return Number(value);
-}
+    let rows = [...tbody.rows];
 
     rows.sort((a,b)=>{
 
         let x = a.cells[col].textContent.trim();
         let y = b.cells[col].textContent.trim();
-		
-let numX = parseValue(x);
-let numY = parseValue(y);
 
-if(col === 6){
+        let numX = parseValue(x);
+        let numY = parseValue(y);
 
-    numX = Number(a.cells[col].dataset.rarity);
-    numY = Number(b.cells[col].dataset.rarity);
+        if(col === 6){
+            numX = Number(a.cells[col].dataset.rarity);
+            numY = Number(b.cells[col].dataset.rarity);
+        }
 
-}
-
-        let numeric =
-            !isNaN(numX) &&
-            !isNaN(numY);
+        let numeric = !isNaN(numX) && !isNaN(numY);
 
         if(numeric){
-
-            return currentMode === 1
-                ? numY - numX
-                : numX - numY;
-
+            return currentMode === 1 ? numY - numX : numX - numY;
         }else{
-
-            return currentMode === 1
-                ? x.localeCompare(y,"ja")
-                : y.localeCompare(x,"ja");
+            return currentMode === 1 ? x.localeCompare(y,"ja") : y.localeCompare(x,"ja");
         }
     });
 
-    tbody.innerHTML="";
-
-    rows.forEach(row=>{
-        tbody.appendChild(row);
-    });
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
 
     applyFilter();
 
     const th = document.querySelectorAll("th")[col];
-
     if(currentMode === 1){
-        th.querySelector(".up").style.color="red";
+        th.querySelector(".up").style.color = "#d33";
     }
-
     if(currentMode === 2){
-        th.querySelector(".down").style.color="blue";
+        th.querySelector(".down").style.color = "#2e7dd1";
     }
 }
 
 function toggleGroup(col){
 
     groupStates[col] = !groupStates[col];
-
-    document.getElementById("group"+col).textContent =
-        groupStates[col] ? "●" : "○";
+    document.getElementById("group"+col).textContent = groupStates[col] ? "●" : "○";
 
     const tbody = document.querySelector("#statusTable tbody");
-
     let rows = [...tbody.rows];
 
     if(groupStates[col]){
-
         rows.sort((a,b)=>{
-
             let x = a.cells[col].textContent.trim();
             let y = b.cells[col].textContent.trim();
-
             return x.localeCompare(y,"ja");
-
         });
-
     }else{
-
-        rows = originalRows.map(row =>
-            row.cloneNode(true)
-        );
-
+        rows = originalRows.map(row => row.cloneNode(true));
     }
 
-    tbody.innerHTML="";
-
-    rows.forEach(row=>{
-        tbody.appendChild(row);
-    });
+    tbody.innerHTML = "";
+    rows.forEach(row => tbody.appendChild(row));
 
     applyFilter();
-
 }
 
 function applyFilter(){
 
-    let rarity =
-        [...document.querySelectorAll(".filter:checked")]
-        .map(x=>x.value);
+    let rarity = [...document.querySelectorAll(".filter:checked")].map(x=>x.value);
+    let position = [...document.querySelectorAll(".filter-position:checked")].map(x=>x.value);
+    let role = [...document.querySelectorAll(".filter-role:checked")].map(x=>x.value);
+    let characterClass = [...document.querySelectorAll(".filter-class:checked")].map(x=>x.value);
+    let keyword = document.getElementById("searchBox").value.trim().toLowerCase();
 
-    let position =
-        [...document.querySelectorAll(".filter-position:checked")]
-        .map(x=>x.value);
+    let visibleCount = 0;
+    let totalCount = 0;
 
-    let role =
-        [...document.querySelectorAll(".filter-role:checked")]
-        .map(x=>x.value);
-		
-	let characterClass =
-    [...document.querySelectorAll(".filter-class:checked")]
-    .map(x=>x.value);	
+    document.querySelectorAll("#statusTable tbody tr").forEach(row=>{
 
-    document.querySelectorAll("#statusTable tbody tr")
-    .forEach(row=>{
+        totalCount++;
 
-        let rowRarity =
-            row.cells[6]?.dataset.rarity || "";
+        let rowRarity = row.cells[6]?.dataset.rarity || "";
+        let rowPosition = row.cells[7]?.textContent.trim() || "";
+        let rowRole = row.cells[8]?.textContent.trim() || "";
+        let rowName = row.cells[0]?.textContent.trim().toLowerCase() || "";
 
-        let rowPosition =
-            row.cells[7]?.textContent.trim() || "";
+        let rowClass = "";
+        if(row.classList.contains("red")) rowClass = "red";
+        else if(row.classList.contains("blue")) rowClass = "blue";
+        else if(row.classList.contains("yellow")) rowClass = "yellow";
 
-        let rowRole =
-            row.cells[8]?.textContent.trim() || "";
-			
-		let rowClass = "";
+        let rarityMatch = rarity.length === 0 || rarity.includes(rowRarity);
+        let positionMatch = position.length === 0 || position.includes(rowPosition);
+        let roleMatch = role.length === 0 || role.includes(rowRole);
+        let classMatch = characterClass.length === 0 || characterClass.includes(rowClass);
+        let keywordMatch = keyword === "" || rowName.includes(keyword);
 
-if(row.classList.contains("red")){
-    rowClass = "red";
-}
-else if(row.classList.contains("blue")){
-    rowClass = "blue";
-}
-else if(row.classList.contains("yellow")){
-    rowClass = "yellow";
-}	
+        let show = rarityMatch && positionMatch && roleMatch && classMatch && keywordMatch;
 
-        let rarityMatch =
-    rarity.length === 0 ||
-    rarity.includes(rowRarity);
+        row.classList.toggle("row-hidden", !show);
 
-let positionMatch =
-    position.length === 0 ||
-    position.includes(rowPosition);
-
-let roleMatch =
-    role.length === 0 ||
-    role.includes(rowRole);
-	
-let classMatch =
-    characterClass.length === 0 ||
-    characterClass.includes(rowClass);	
-
-let show =
-    rarityMatch &&
-    positionMatch &&
-    roleMatch &&
-    classMatch;
-
-        row.style.display =
-            show ? "" : "none";
-
+        if(show) visibleCount++;
     });
+
+    document.getElementById("resultCount").textContent =
+        visibleCount + " / " + totalCount + " 件表示中";
 }
 
 function clearFilter(){
-
     document.querySelectorAll(
         ".filter,.filter-position,.filter-role,.filter-class"
-    ).forEach(box=>{
-        box.checked = false;
-    });
-
+    ).forEach(box=>{ box.checked = false; });
+    document.getElementById("searchBox").value = "";
     applyFilter();
-
 }
 
 </script>
+</body>
+</html>
